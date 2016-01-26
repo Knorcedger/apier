@@ -1,0 +1,7 @@
+{
+	"extends": 'google',
+	"rules": {
+		"indent": [2, 'tab'],
+		"no-loop-func": 0
+	}
+}

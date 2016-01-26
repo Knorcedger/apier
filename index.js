@@ -1,5 +1,6 @@
 var router = require('router')();
 var reqlog = require('reqlog');
+var responseBuilder = require('apier-responsebuilder');
 
 exports.init = function() {
 	reqlog.info('apier initialized!!');
@@ -17,7 +18,7 @@ exports.endpoint = function(url, callback) {
 	// its used to be able to call the send function inside the callback
 	// without having to also pass the req and res
 	var self = this;
-	router.get(url, [test], function(req, res) {
+	router.get(url, [test, responseBuilder.init], function(req, res) {
 		var innerSelf = {
 			req: req,
 			res: res,
@@ -32,8 +33,7 @@ exports.endpoint = function(url, callback) {
 
 exports.send = function(data) {
 	reqlog.info('inside api send');
-	this.res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-	this.res.end(data);
+	responseBuilder.send(this.req, this.res, data);
 };
 
 function test(req, res, next) {

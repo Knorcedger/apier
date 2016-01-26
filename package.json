@@ -5,6 +5,7 @@
   "author": "Knorcedger",
   "bugs": "https://github.com/Knorcedger/APIer/issues",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "reqlog": "^1.1.3",
     "router": "^1.1.3"
   },

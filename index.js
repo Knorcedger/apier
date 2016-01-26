@@ -4,14 +4,16 @@ var router = require('router')();
 var reqlog = require('reqlog');
 var responseBuilder = require('apier-responsebuilder');
 var dataParser = require('apier-dataparser');
+var bodyParser = require('body-parser');
 
-var middlewares = [test, responseBuilder.init, dataParser];
+var jsonParser = bodyParser.json();
+
+var middlewares = [test, jsonParser, dataParser, responseBuilder.init];
 var self = this;
 
 exports.init = function() {
 	reqlog.info('apier initialized!!');
 	var app = function(req, res) {
-		// console.log('inside the app!');
 		router(req, res, function() {});
 		router.all('*', middlewares, function(req, res) {
 			reqlog.info('inside all endpoint', req.url);

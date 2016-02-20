@@ -5,6 +5,9 @@
   "author": "Knorcedger",
   "bugs": "https://github.com/Knorcedger/apier/issues",
   "dependencies": {
+    "apier-accessverifier": "^1.0.1",
+    "apier-dataparser": "^1.0.1",
+    "apier-responsebuilder": "^1.1.1",
     "body-parser": "^1.14.2",
     "reqlog": "^1.1.3",
     "router": "^1.1.3"

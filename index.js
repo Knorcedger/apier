@@ -4,6 +4,7 @@ var router = require('router')();
 var reqlog = require('reqlog');
 var responseBuilder = require('apier-responsebuilder');
 var dataParser = require('apier-dataparser');
+var accessVerifier = require('apier-accessverifier');
 var bodyParser = require('body-parser');
 
 var jsonParser = bodyParser.json();
@@ -13,13 +14,16 @@ module.exports = apier;
 /**
  * Create an apier app
  * @method apier
+ * @param {object} config The app configuration
  * @return {Function} The app to use as server
  */
-function apier() {
+function apier(config) {
+	// on server start..
+	accessVerifier.init(config);
 	reqlog.info('apier initialized!!');
 
 	var app = function(req, res) {
-		// this si the final handler if no match found
+		// this is the final handler if no match found
 		router(req, res, function() {
 			reqlog.info('NOT_FOUND:', req.method + ' ' + req.url);
 			responseBuilder.error(req, res, 'NOT_FOUND');
@@ -31,15 +35,18 @@ function apier() {
 	return app;
 }
 
-// just logs the request
+// first, just log the request
 router.use(function(req, res, next) {
-	reqlog.error('REQUEST:', req.method + ' ' + req.url);
+	// add an empty line to easily see new requests in terminal
+	reqlog.info('\n');
+	reqlog.info('REQUEST:', req.method + ' ' + req.url);
 	next();
 });
 router.use(test);
 router.use(jsonParser);
 router.use(dataParser);
 router.use(responseBuilder.init);
+router.use(accessVerifier.verify);
 // when its an options request, just respond with 200
 router.options('*', function(req, res) {
 	reqlog.info('inside options');
@@ -57,7 +64,7 @@ router.options('*', function(req, res) {
 function endpoint(methods, url, callback) {
 	for (var i = 0, length = methods.length; i < length; i++) {
 		var method = methods[i].toLowerCase();
-		reqlog.info('setup endpoint', method + ' ' + url);
+		reqlog.log('setup endpoint', method + ' ' + url);
 		router[method](url, function(req, res) {
 			routerCallback(req, res, callback);
 		});

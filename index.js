@@ -72,12 +72,23 @@ function endpoint(methods, url, callback) {
 }
 
 /**
+ * Set the statusCode. Must be done before sending the data
+ * or 'OK' will be sent
+ * @method setStatusCode
+ * @param  {string} statusCode The statusCode to return
+ */
+function setStatusCode(statusCode) {
+	reqlog.info('inside apier setStatusCode');
+	this.req.response.meta.statusCode = statusCode;
+}
+
+/**
  * Just sends the response using this
  * @method send
  * @param  {any} data The data to return
  */
 function send(data) {
-	reqlog.info('inside api send');
+	reqlog.info('inside apier send');
 	responseBuilder.send(this.req, this.res, data);
 }
 
@@ -98,6 +109,9 @@ function routerCallback(req, res, callback) {
 		res: res,
 		send: function(data) {
 			send.call(this, data);
+		},
+		setStatusCode: function(statusCode) {
+			setStatusCode.call(this, statusCode);
 		}
 	};
 	reqlog.info('inside routerCallback for endpoint: ', req.url);

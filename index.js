@@ -32,9 +32,14 @@ function apier(config) {
 
 	var app = function(req, res) {
 		// this is the final handler if no match found
-		router(req, res, function() {
-			reqlog.info('NOT_FOUND:', req.method + ' ' + req.url);
-			responseBuilder.error(req, res, 'NOT_FOUND');
+		router(req, res, function(error) {
+			if (error) {
+				reqlog.error(error);
+				responseBuilder.error(req, res, 'INTERNAL_SERVER_ERROR');
+			} else {
+				reqlog.info('NOT_FOUND:', req.method + ' ' + req.url);
+				responseBuilder.error(req, res, 'NOT_FOUND');
+			}
 		});
 	};
 

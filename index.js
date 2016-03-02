@@ -6,6 +6,9 @@ var responseBuilder = require('apier-responsebuilder');
 var dataParser = require('apier-dataparser');
 var accessVerifier = require('apier-accessverifier');
 var bodyParser = require('body-parser');
+var permissioner = require('apier-permissioner');
+var db = require('apier-database');
+var schemaExtender = require('mongoose-schema-extender');
 
 var jsonParser = bodyParser.json();
 
@@ -15,11 +18,16 @@ module.exports = apier;
  * Create an apier app
  * @method apier
  * @param {object} config The app configuration
+ * It must contain the following options
+ * mongoUrl: String. The mongo url to connect to
+ * handleErrors: Boolean. Define if the schemaExtender will handle the db errors
  * @return {Function} The app to use as server
  */
 function apier(config) {
 	// on server start..
-	accessVerifier.init(config);
+	db.connect(config.mongoUrl);
+	accessVerifier.init(config.access);
+	schemaExtender.handleErrors = true;
 	reqlog.info('apier initialized!!');
 
 	var app = function(req, res) {
@@ -57,16 +65,24 @@ router.options('*', function(req, res) {
 /**
  * Create an endpoint
  * @method endpoint
- * @param  {array}   methods  The endpoint methods e.g. ['get'. 'post']
- * @param  {string}   url      The endpoint path e.g. '/users'
- * @param  {Function} callback The user defined callback
+ * @param  {object}   options  It contains the following options
+ * methods: Array. Can contain 'post', 'get', 'delete', 'put'
+ * url: String. The matching url e.g. /users, /users/:id/update
+ * permissions: Array (optional). Docs: https://github.com/Knorcedger/apier-permissioner
+ * if no permissions given, 'null' (public service) is assumed
+ * callback: Function. The callback function to execute
  */
-function endpoint(methods, url, callback) {
-	for (var i = 0, length = methods.length; i < length; i++) {
-		var method = methods[i].toLowerCase();
-		reqlog.log('setup endpoint', method + ' ' + url);
-		router[method](url, function(req, res) {
-			routerCallback(req, res, callback);
+function endpoint(options) {
+	for (var i = 0, length = options.methods.length; i < length; i++) {
+		var method = options.methods[i].toLowerCase();
+		reqlog.log('setup endpoint', method + ' ' + options.url);
+		// find the middlewares
+		if (!options.permissions) {
+			options.permissions = ['null'];
+		}
+		router[method](options.url, [permissioner(options.permissions)],
+		function(req, res) {
+			routerCallback(req, res, options.callback);
 		});
 	}
 }

@@ -73,14 +73,16 @@ router.options('*', function(req, res) {
  * callback: Function. The callback function to execute
  */
 function endpoint(options) {
+	// find the middlewares
+	options.permissions = options.permissions || ['null'];
+	options.middlewares = options.middlewares || [];
+	options.middlewares.unshift([permissioner(options.permissions)]);
+
 	for (var i = 0, length = options.methods.length; i < length; i++) {
 		var method = options.methods[i].toLowerCase();
 		reqlog.log('setup endpoint', method + ' ' + options.url);
-		// find the middlewares
-		if (!options.permissions) {
-			options.permissions = ['null'];
-		}
-		router[method](options.url, [permissioner(options.permissions)],
+
+		router[method](options.url, options.middlewares,
 		function(req, res) {
 			routerCallback(req, res, options.callback);
 		});

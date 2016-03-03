@@ -10,6 +10,7 @@
     "apier-dataparser": "^1.0.1",
     "apier-permissioner": "^1.0.0",
     "apier-responsebuilder": "^1.1.1",
+    "apier-validationsrunner": "^1.0.1",
     "body-parser": "^1.14.2",
     "mongoose-schema-extender": "^1.0.1",
     "reqlog": "^1.1.3",

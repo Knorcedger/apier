@@ -47,6 +47,10 @@ http.createServer(app).listen(2000, function() {
 });
 ```
 
+To configure the apier, you just need to provide the mongoDB url,
+the access configuration ([as explained here](https://github.com/Knorcedger/apier-accessverifier))
+and define if you want apier to automatically handle database errors you want to do it yourself
+
 ### URLs
 The [Express.js router](https://www.npmjs.com/package/router) is used
 internally, and so apier supports all the url formats you are used to

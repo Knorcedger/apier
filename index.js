@@ -55,7 +55,6 @@ router.use(function(req, res, next) {
 	reqlog.info('REQUEST:', req.method + ' ' + req.url);
 	next();
 });
-router.use(test);
 router.use(jsonParser);
 router.use(dataParser);
 router.use(responseBuilder.init);
@@ -139,17 +138,4 @@ function routerCallback(req, res, callback) {
 	};
 	reqlog.info('inside routerCallback for endpoint: ', req.url);
 	callback.call(innerSelf, req, res);
-}
-
-/**
- * Dummy middleware
- * @method test
- * @param  {[type]}   req  [description]
- * @param  {[type]}   res  [description]
- * @param  {Function} next [description]
- */
-function test(req, res, next) {
-	reqlog.log('inside test');
-
-	next();
 }

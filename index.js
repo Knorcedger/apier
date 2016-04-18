@@ -72,6 +72,7 @@ router.options('*', function(req, res) {
  * @param  {object}   options  It contains the following options
  * methods: Array. Can contain 'post', 'get', 'delete', 'put'
  * url: String. The matching url e.g. /users, /users/:id/update
+ * middlewares: Array. The middlewares (functions) that will be called before the callback
  * permissions: Array (optional). Docs: https://github.com/Knorcedger/apier-permissioner
  * if no permissions given, 'null' (public service) is assumed
  * callback: Function. The callback function to execute
@@ -110,7 +111,6 @@ function setStatusCode(statusCode) {
  * @param  {any} data The data to return
  */
 function send(data) {
-	reqlog.info('inside apier send');
 	responseBuilder.send(this.req, this.res, data);
 }
 

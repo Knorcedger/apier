@@ -1,7 +1,7 @@
 {
   "name": "apier",
   "description": "Creating APIs can't be easier.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Knorcedger",
   "bugs": "https://github.com/Knorcedger/apier/issues",
   "dependencies": {
